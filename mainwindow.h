@@ -1,7 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "qdatetime.h"
 #include <QMainWindow>
+#include <QTimer>
+#include <QTime>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,7 +22,19 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void updateTime();
+    void on_startBtn_clicked();
+    void on_resetBtn_clicked();
+
 private:
+    QTimer *timer;
+    QTime remainingTime;
+    bool isPaused;
+    QMediaPlayer *player;
+    QAudioOutput *audioOutput;
     Ui::MainWindow *ui;
+    void set_UI_time(QString timeToSet);
+    void set_btn_text(QString);
 };
 #endif // MAINWINDOW_H
