@@ -12,10 +12,12 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    pomodorotimer.cpp \
     timer.cpp
 
 HEADERS += \
     mainwindow.h \
+    pomodorotimer.h \
     timer.h
 
 FORMS += \
