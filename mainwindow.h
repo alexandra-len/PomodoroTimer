@@ -7,6 +7,7 @@
 #include <QTime>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include "timer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,6 +29,7 @@ private slots:
     void on_resetBtn_clicked();
 
 private:
+    Timer *timerController;
     QTimer *timer;
     QTime remainingTime;
     bool isPaused;
@@ -36,5 +38,6 @@ private:
     Ui::MainWindow *ui;
     void set_UI_time(QString timeToSet);
     void set_btn_text(QString);
+    void on_timer_stop();
 };
 #endif // MAINWINDOW_H
