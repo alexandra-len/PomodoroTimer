@@ -6,6 +6,7 @@ PomodoroTimer::PomodoroTimer(QObject *parent, QTime workMins, QTime breakMins, i
     workTime = workMins;
     breakTime = breakMins;
     pomodoroNr = pomodoros;
+    timer = new Timer(this);
 }
 
 void start() {
@@ -17,5 +18,9 @@ void stop() {
 };
 
 void skip() {
+
+};
+
+void pause() {
 
 };

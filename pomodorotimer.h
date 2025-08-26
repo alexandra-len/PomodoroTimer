@@ -14,12 +14,17 @@ public:
     void start(); // start pomodoro sessions
     void stop(); // stop
     void skip(); // skip current session
+    void pause(); // pause current timer
 
 private:
     QTime workTime;
     QTime breakTime;
     int pomodoroNr;
-    Timer timer;
+    Timer *timer;
+    typedef enum {
+        Work,
+        Break
+    } currState;
 };
 
 #endif // POMODOROTIMER_H

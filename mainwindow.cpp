@@ -8,9 +8,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->stackedWidget->setCurrentIndex(0);
 
     timerController = new Timer(this);
-    remainingTime = ui->setTimer->time();
+    remainingTime = ui->setWork->time();
 
     connect(timerController, &Timer::tick, this, [this](QTime t) {ui->timerTxt->setText(t.toString("mm:ss"));});
 
@@ -29,46 +30,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::updateTime() {
-//     remainingTime = remainingTime.addSecs(-1);
-
-//     set_UI_time(remainingTime.toString("mm:ss"));
-
-//     if (remainingTime <= QTime(0,0,0,0)) {
-//         timer->stop();
-//         set_btn_text("Start Timer");
-//         ui->setTimer->setEnabled(true);
-//         player->play();
-//         QApplication::beep();
-//     }
-}
-
 void MainWindow::on_startBtn_clicked()
 {
-    if (ui->setTimer->time() > QTime(0,0,0,0)) {
+    ui->stackedWidget->setCurrentIndex(1);
+    if (ui->setWork->time() > QTime(0,0,0,0)) {
         if (!timerController->isTimerRunning())
         {
-            timerController->start(ui->setTimer->time());
-            set_btn_text("Pause Timer");
+            ui->timerTxt->setText(ui->setWork->time().toString("mm:ss"));
+            timerController->start(ui->setWork->time());
+            set_pauseBtn_text("Pause Timer");
         }
         else {
             timerController->pause();
-            set_btn_text("Resume Timer");
+            set_pauseBtn_text("Resume Timer");
         }
-        // if (!timer->isActive()) {
-        //     if (!isPaused) {
-        //         remainingTime = ui->setTimer->time();
-        //     }
-        //     ui->setTimer->setEnabled(false);
-        //     timer->start(1000);
-        //     set_btn_text("Pause Timer");
-        //     isPaused = false;
-        // }
-        // else {
-        //     timer->stop();
-        //     isPaused = true;
-        //     set_btn_text("Resume Timer");
-        // }
     }
 }
 void MainWindow::on_resetBtn_clicked() {
@@ -76,26 +51,31 @@ void MainWindow::on_resetBtn_clicked() {
         timerController->stop();
     }
     on_timer_stop();
-    // if (timer->isActive()) {
-    //     timer->stop();
-    // }
-    // ui->setTimer->setEnabled(true);
-    // remainingTime = ui->setTimer->time();
-    // set_UI_time(remainingTime.toString("mm:ss"));
-    // set_btn_text("Start Timer");
-    // isPaused = false;
+}
+
+void MainWindow::on_pauseBtn_clicked() {
+    if (!timerController->isTimerRunning())
+    {
+        timerController->start(ui->setWork->time());
+        set_pauseBtn_text("Pause Timer");
+    }
+    else {
+        timerController->pause();
+        set_pauseBtn_text("Resume Timer");
+    }
 }
 
 void MainWindow::set_UI_time(QString timeToSet) {
     ui->timerTxt->setText(timeToSet);
 }
-void MainWindow::set_btn_text(QString text) {
-    ui->startBtn->setText(text);
+void MainWindow::set_pauseBtn_text(QString text) {
+    ui->pauseBtn->setText(text);
 }
 
 void MainWindow::on_timer_stop() {
-    ui->startBtn->setText("Start Timer");
-    ui->setTimer->setEnabled(true);
+    ui->pauseBtn->setText("Start Timer");
+    ui->setWork->setEnabled(true);
     set_UI_time(remainingTime.toString("mm:ss"));
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
