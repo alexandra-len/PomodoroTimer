@@ -15,16 +15,17 @@ public:
     void stop(); // stop
     void skip(); // skip current session
     void pause(); // pause current timer
+    void resume(); // resume current timer
+    void onTimerEnd();
+    bool isLastPomodoro();
 
 private:
     QTime workTime;
     QTime breakTime;
-    int pomodoroNr;
+    int pomodoroMax;
+    int pomodoroComplete;
     Timer *timer;
-    typedef enum {
-        Work,
-        Break
-    } currState;
+    bool isWorking;
 };
 
 #endif // POMODOROTIMER_H

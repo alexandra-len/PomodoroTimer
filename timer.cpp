@@ -11,9 +11,7 @@ void Timer::start(const QTime &duration) {
     if (!isPaused) {
         remaining = duration;
     }
-    timer->start(1000);
-    isPaused = false;
-    isRunning = true;
+    resume();
 }
 
 void Timer::pause() {
@@ -45,4 +43,9 @@ void Timer::updateTime() {
         stop();
         emit finished();
     }
+}
+void Timer::resume() {
+    timer->start(1000);
+    isPaused = false;
+    isRunning = true;
 }
