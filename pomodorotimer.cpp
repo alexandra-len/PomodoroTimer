@@ -11,7 +11,7 @@ PomodoroTimer::PomodoroTimer(QObject *parent, QTime workMins, QTime breakMins, i
 }
 
 void PomodoroTimer::start() {
-    timer->start(workTime);
+    startTimerFromTime(workTime);
     isWorking = true;
     pomodoroComplete = 0;
 };
@@ -21,17 +21,7 @@ void PomodoroTimer::stop() {
 };
 
 void PomodoroTimer::skip() {
-    if (isWorking) {
-        timer->stop();
-        timer->start(breakTime);
-        pomodoroComplete++; // add to pomodoro count when pomodoro session is done
-        isWorking = false;
-    } // ADD: check if this was the last pomodoro
-    else {
-        timer->stop();
-        timer->start(workTime);
-        isWorking = true;
-    }
+    onTimerEnd();
 };
 
 void PomodoroTimer::pause() {
@@ -42,17 +32,28 @@ void PomodoroTimer::resume() {
     timer->resume();
 }
 void PomodoroTimer::onTimerEnd() {
-    if (!isLastPomodoro()) {
-
+    if (isWorking) {
+        pomodoroComplete++;
+        isWorking = false;
+        if (!isLastPomodoro()) {
+            startTimerFromTime(breakTime);
+        }
+        else {
+            emit pomodoroFinished();
+        }
+    }
+    else {
+        isWorking = true;
+        startTimerFromTime(workTime);
     }
 }
 
 bool PomodoroTimer::isLastPomodoro() {
-    if (isWorking) {
-        pomodoroComplete++;
+    return pomodoroComplete >= pomodoroMax;
+}
+void PomodoroTimer::startTimerFromTime(QTime timeToStart) {
+    if (timer->isTimerRunning()) {
+        timer->stop();
     }
-
-    if (pomodoroComplete < pomodoroMax - 1) {
-
-    }
+    timer->start(timeToStart);
 }

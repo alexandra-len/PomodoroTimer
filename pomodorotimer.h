@@ -18,6 +18,10 @@ public:
     void resume(); // resume current timer
     void onTimerEnd();
     bool isLastPomodoro();
+    void startTimerFromTime(QTime);
+
+signals:
+    void pomodoroFinished();
 
 private:
     QTime workTime;
