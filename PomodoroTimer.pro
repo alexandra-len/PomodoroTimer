@@ -13,12 +13,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     pomodorotimer.cpp \
-    timer.cpp
+    timer.cpp \
+    pomodorotimer.h
 
 HEADERS += \
     mainwindow.h \
     pomodorotimer.h \
-    timer.h
+    timer.h \
+    pomodorotimer.h
 
 FORMS += \
     mainwindow.ui

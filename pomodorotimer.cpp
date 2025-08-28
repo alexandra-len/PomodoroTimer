@@ -8,38 +8,45 @@ PomodoroTimer::PomodoroTimer(QObject *parent, QTime workMins, QTime breakMins, i
     pomodoroMax = pomodoros;
     timer = new Timer(this);
     connect(timer, &Timer::finished, this, [this]() {onTimerEnd();});
+    connect(timer, &Timer::tick, this, [this](QTime t) {emit pomodoroTick(t);});
 }
 
 void PomodoroTimer::start() {
     startTimerFromTime(workTime);
     isWorking = true;
     pomodoroComplete = 0;
-};
+}
 
 void PomodoroTimer::stop() {
-    timer->stop();
-};
+    if (timer->isTimerRunning())
+    {
+        timer->stop();
+    }
+}
 
 void PomodoroTimer::skip() {
     onTimerEnd();
-};
+}
 
 void PomodoroTimer::pause() {
-    timer->pause();
-};
-
-void PomodoroTimer::resume() {
-    timer->resume();
+    if (timer->isTimerRunning()) {
+        timer->pause();
+    }
+    else {
+        timer->resume();
+    }
 }
+
 void PomodoroTimer::onTimerEnd() {
     if (isWorking) {
         pomodoroComplete++;
         isWorking = false;
+        emit pomodoroSingleFinished();
         if (!isLastPomodoro()) {
             startTimerFromTime(breakTime);
         }
         else {
-            emit pomodoroFinished();
+            emit pomodorosFinished();
         }
     }
     else {
@@ -56,4 +63,24 @@ void PomodoroTimer::startTimerFromTime(QTime timeToStart) {
         timer->stop();
     }
     timer->start(timeToStart);
+}
+
+void PomodoroTimer::setWorkTime(QTime workMins) {
+    workTime = workMins;
+}
+
+void PomodoroTimer::setBreakTime(QTime breakMins) {
+    breakTime = breakMins;
+}
+
+void PomodoroTimer::setPomodoroCount(int pomodoroCount) {
+    pomodoroMax = pomodoroCount;
+}
+
+int PomodoroTimer::getPomodorosLeft() {
+    return pomodoroMax - pomodoroComplete;
+}
+
+bool PomodoroTimer::isRunning() {
+    return timer->isTimerRunning();
 }
