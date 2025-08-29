@@ -30,6 +30,7 @@ signals:
     void pomodorosFinished();
     void pomodoroTick(QTime);
     void pomodoroSingleFinished();
+    void timerStarted(QTime);
 
 private:
     QTime workTime;

@@ -42,6 +42,6 @@ private:
     void set_UI_time(QString timeToSet);
     void set_pauseBtn_text(QString);
     void on_timer_stop();
-    void update_pomodoro_count();
+    void update_ui(const QTime &t);
 };
 #endif // MAINWINDOW_H

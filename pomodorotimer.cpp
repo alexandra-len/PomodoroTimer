@@ -1,4 +1,5 @@
 #include "pomodorotimer.h"
+#include "timer.h"
 
 PomodoroTimer::PomodoroTimer(QObject *parent, QTime workMins, QTime breakMins, int pomodoros)
     : QObject(parent), pomodoroComplete(0)
@@ -41,9 +42,9 @@ void PomodoroTimer::onTimerEnd() {
     if (isWorking) {
         pomodoroComplete++;
         isWorking = false;
-        emit pomodoroSingleFinished();
         if (!isLastPomodoro()) {
             startTimerFromTime(breakTime);
+            emit pomodoroSingleFinished();
         }
         else {
             emit pomodorosFinished();
@@ -63,6 +64,7 @@ void PomodoroTimer::startTimerFromTime(QTime timeToStart) {
         timer->stop();
     }
     timer->start(timeToStart);
+    emit timerStarted(timeToStart);
 }
 
 void PomodoroTimer::setWorkTime(QTime workMins) {

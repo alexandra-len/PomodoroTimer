@@ -31,6 +31,7 @@ private:
     QTime remaining;
     bool isPaused;
     bool isRunning;
+    bool reachedZeroOnce;
 };
 
 #endif // TIMER_H

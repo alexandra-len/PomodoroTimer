@@ -16,7 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(pomodoroController, &PomodoroTimer::pomodoroTick, this, [this](QTime t) {ui->timerTxt->setText(t.toString("mm:ss"));});
     connect(pomodoroController, &PomodoroTimer::pomodorosFinished, this, [this]() {on_timer_stop(); player->play();});
-    connect(pomodoroController, &PomodoroTimer::pomodoroSingleFinished, this, [this]() { update_pomodoro_count();});
+    // connect(pomodoroController, &PomodoroTimer::pomodoroSingleFinished, this, [this]() { update_ui();});
+    connect(pomodoroController, &PomodoroTimer::timerStarted, this, [this](QTime t) { update_ui(t);});
     player = new QMediaPlayer(this);
     audioOutput = new QAudioOutput(this);
 
@@ -37,9 +38,8 @@ void MainWindow::on_startBtn_clicked()
         pomodoroController->setBreakTime(ui->setBreak->time());
         pomodoroController->setWorkTime(ui->setWork->time());
         pomodoroController->setPomodoroCount(ui->pomodoroNr->value());
-        update_pomodoro_count();
-        ui->timerTxt->setText(ui->setWork->time().toString("mm:ss"));
         pomodoroController->start();
+        update_ui(ui->setWork->time());
         set_pauseBtn_text("Pause Timer");
     }
     else {
@@ -72,11 +72,15 @@ void MainWindow::set_pauseBtn_text(QString text) {
     ui->pauseBtn->setText(text);
 }
 
-void MainWindow::update_pomodoro_count() {
-    ui->pomodorosLeft->setText(QVariant(pomodoroController->getPomodorosLeft()).toString());
+void MainWindow::update_ui(const QTime &t) {
+    QString pomodoroText = "Pomodoros left: ";
+    pomodoroText.append(QVariant(pomodoroController->getPomodorosLeft()).toString());
+    ui->pomodorosLeft->setText(pomodoroText);
+    ui->timerTxt->setText(t.toString("mm:ss"));
 }
 
 void MainWindow::on_timer_stop() {
+    pomodoroController->stop();
     ui->pauseBtn->setText("Start Timer");
     set_UI_time(remainingTime.toString("mm:ss"));
     ui->stackedWidget->setCurrentIndex(0);

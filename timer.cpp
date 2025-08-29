@@ -5,11 +5,14 @@ Timer::Timer(QObject *parent)
 {
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Timer::updateTime);
+    reachedZeroOnce = false;
 }
 
 void Timer::start(const QTime &duration) {
     if (!isPaused) {
+        reachedZeroOnce = false;
         remaining = duration;
+        emit tick(remaining);
     }
     resume();
 }
@@ -35,14 +38,20 @@ bool Timer::isTimerRunning() const {
 }
 
 void Timer::updateTime() {
+    if (remaining == QTime(0,0,0))
+    {
+        if (!reachedZeroOnce) {
+            remaining = remaining.addSecs(1);
+            reachedZeroOnce = true;
+        }
+        else {
+            stop();
+            emit finished();
+            return;
+        }
+    }
     remaining = remaining.addSecs(-1);
     emit tick(remaining);
-
-    if (remaining <= QTime(0,0,0))
-    {
-        stop();
-        emit finished();
-    }
 }
 void Timer::resume() {
     timer->start(1000);
