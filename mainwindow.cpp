@@ -16,7 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(pomodoroController, &PomodoroTimer::pomodoroTick, this, [this](QTime t) {ui->timerTxt->setText(t.toString("mm:ss"));});
     connect(pomodoroController, &PomodoroTimer::pomodorosFinished, this, [this]() {on_timer_stop(); player->play();});
-    // connect(pomodoroController, &PomodoroTimer::pomodoroSingleFinished, this, [this]() { update_ui();});
+    connect(pomodoroController, &PomodoroTimer::pomodoroSingleFinished, this, [this](bool continueAutomatically, bool skipped) {on_timer_finish(continueAutomatically, skipped);});
+    connect(pomodoroController, &PomodoroTimer::breakFinished, this, [this](bool continueAutomatically, bool skipped) {on_timer_finish(continueAutomatically, skipped);});
     connect(pomodoroController, &PomodoroTimer::timerStarted, this, [this](QTime t) { update_ui(t);});
     player = new QMediaPlayer(this);
     audioOutput = new QAudioOutput(this);
@@ -35,10 +36,15 @@ void MainWindow::on_startBtn_clicked()
 {
     if (ui->setWork->time() > QTime(0,0,0,0) && ui->setBreak->time() > QTime(0,0,0,0)) {
         ui->stackedWidget->setCurrentIndex(1);
+        set_on_top(true);
+        ui->continueBtn->hide();
+
         pomodoroController->setBreakTime(ui->setBreak->time());
         pomodoroController->setWorkTime(ui->setWork->time());
         pomodoroController->setPomodoroCount(ui->pomodoroNr->value());
+        pomodoroController->setContinueAutomatically(ui->continueCheckBox->isChecked());
         pomodoroController->start();
+
         update_ui(ui->setWork->time());
         set_pauseBtn_text("Pause Timer");
     }
@@ -59,10 +65,17 @@ void MainWindow::on_pauseBtn_clicked() {
     else {
         set_pauseBtn_text("Resume Timer");
     }
+
 }
 
 void MainWindow::on_skipBtn_clicked() {
     pomodoroController->skip();
+}
+
+void MainWindow::on_continueBtn_clicked() {
+    pomodoroController->continueTimer();
+    ui->continueBtn->hide();
+    ui->pauseBtn->show();
 }
 
 void MainWindow::set_UI_time(QString timeToSet) {
@@ -83,6 +96,39 @@ void MainWindow::on_timer_stop() {
     pomodoroController->stop();
     ui->pauseBtn->setText("Start Timer");
     set_UI_time(remainingTime.toString("mm:ss"));
+    ui->pauseBtn->show();
+    set_on_top(false);
     ui->stackedWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_timer_finish(bool continueAutomatically, bool skipped) {
+    player->play();
+    if (!skipped) {
+        if (!continueAutomatically) {
+            ui->pauseBtn->hide();
+            ui->continueBtn->show();
+        }
+    }
+}
+
+void MainWindow::set_on_top(bool keepOnTop) {
+    Qt::WindowFlags flags = this->windowFlags();
+    if (keepOnTop) {
+        if (ui->keepOnTopCheckBox->isChecked()) {
+            this->raise();
+            this->activateWindow();
+
+            this->setWindowFlags(flags | Qt::WindowStaysOnTopHint);
+            this->show();
+        }
+        else {
+            this->setWindowFlags(flags & ~Qt::WindowStaysOnTopHint);
+            this->show();
+        }
+    }
+    else {
+        this->setWindowFlags(flags & ~Qt::WindowStaysOnTopHint);
+        this->show();
+    }
 }
 

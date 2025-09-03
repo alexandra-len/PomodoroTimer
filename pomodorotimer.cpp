@@ -2,7 +2,7 @@
 #include "timer.h"
 
 PomodoroTimer::PomodoroTimer(QObject *parent, QTime workMins, QTime breakMins, int pomodoros)
-    : QObject(parent), pomodoroComplete(0)
+    : QObject(parent), pomodoroComplete(0), continueAutomatically(false)
 {
     workTime = workMins;
     breakTime = breakMins;
@@ -26,7 +26,7 @@ void PomodoroTimer::stop() {
 }
 
 void PomodoroTimer::skip() {
-    onTimerEnd();
+    onTimerSkipped();
 }
 
 void PomodoroTimer::pause() {
@@ -38,13 +38,24 @@ void PomodoroTimer::pause() {
     }
 }
 
+void PomodoroTimer::continueTimer() {
+    if (!isWorking) {
+        startTimerFromTime(breakTime);
+    }
+    else {
+        startTimerFromTime(workTime);
+    }
+}
+
 void PomodoroTimer::onTimerEnd() {
     if (isWorking) {
         pomodoroComplete++;
         isWorking = false;
         if (!isLastPomodoro()) {
-            startTimerFromTime(breakTime);
-            emit pomodoroSingleFinished();
+            emit pomodoroSingleFinished(continueAutomatically, false);
+            if (continueAutomatically) {
+                startTimerFromTime(breakTime);
+            }
         }
         else {
             emit pomodorosFinished();
@@ -52,6 +63,28 @@ void PomodoroTimer::onTimerEnd() {
     }
     else {
         isWorking = true;
+        emit breakFinished(continueAutomatically, false);
+        if (continueAutomatically) {
+            startTimerFromTime(workTime);
+        }
+    }
+}
+
+void PomodoroTimer::onTimerSkipped() {
+    if (isWorking) {
+        pomodoroComplete++;
+        isWorking = false;
+        if (!isLastPomodoro()) {
+            emit pomodoroSingleFinished(continueAutomatically, true);
+            startTimerFromTime(breakTime);
+        }
+        else {
+            emit pomodorosFinished();
+        }
+    }
+    else {
+        isWorking = true;
+        emit breakFinished(continueAutomatically, true);
         startTimerFromTime(workTime);
     }
 }
@@ -77,6 +110,10 @@ void PomodoroTimer::setBreakTime(QTime breakMins) {
 
 void PomodoroTimer::setPomodoroCount(int pomodoroCount) {
     pomodoroMax = pomodoroCount;
+}
+
+void PomodoroTimer::setContinueAutomatically(bool state) {
+    continueAutomatically = state;
 }
 
 int PomodoroTimer::getPomodorosLeft() {

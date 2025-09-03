@@ -29,6 +29,7 @@ private slots:
     void on_resetBtn_clicked();
     void on_pauseBtn_clicked();
     void on_skipBtn_clicked();
+    void on_continueBtn_clicked();
 
 private:
     Timer *timerController;
@@ -39,9 +40,12 @@ private:
     QMediaPlayer *player;
     QAudioOutput *audioOutput;
     Ui::MainWindow *ui;
+    Qt::WindowFlags flags;
     void set_UI_time(QString timeToSet);
     void set_pauseBtn_text(QString);
     void on_timer_stop();
     void update_ui(const QTime &t);
+    void on_timer_finish(bool, bool);
+    void set_on_top(bool);
 };
 #endif // MAINWINDOW_H

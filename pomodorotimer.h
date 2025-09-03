@@ -15,21 +15,25 @@ public:
     void stop(); // stop
     void skip(); // skip current session
     void pause(); // pause current timer
+    void continueTimer();
     void startTimerFromTime(QTime);
     void onTimerEnd();
+    void onTimerSkipped();
     bool isLastPomodoro();
     bool isRunning();
 
     void setWorkTime(QTime);
     void setBreakTime(QTime);
     void setPomodoroCount(int);
+    void setContinueAutomatically(bool);
 
     int getPomodorosLeft();
 
 signals:
     void pomodorosFinished();
     void pomodoroTick(QTime);
-    void pomodoroSingleFinished();
+    void pomodoroSingleFinished(bool, bool);
+    void breakFinished(bool, bool);
     void timerStarted(QTime);
 
 private:
@@ -39,6 +43,7 @@ private:
     int pomodoroComplete;
     Timer *timer;
     bool isWorking;
+    bool continueAutomatically;
 };
 
 #endif // POMODOROTIMER_H

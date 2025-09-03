@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page">
      <widget class="QWidget" name="gridLayoutWidget_2">
@@ -133,6 +133,32 @@
        <string/>
       </property>
      </widget>
+     <widget class="QCheckBox" name="continueCheckBox">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>270</y>
+        <width>191</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Continue Automatically?</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="keepOnTopCheckBox">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>300</y>
+        <width>191</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Keep on Top?</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="page_2">
      <widget class="QWidget" name="gridLayoutWidget">
@@ -159,17 +185,24 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QPushButton" name="resetBtn">
          <property name="text">
           <string>Stop Timer</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QPushButton" name="skipBtn">
          <property name="text">
           <string>Skip Timer</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="continueBtn">
+         <property name="text">
+          <string>Next!</string>
          </property>
         </widget>
        </item>
