@@ -12,12 +12,16 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    pomodorocontroller.cpp \
+    pomodorosession.cpp \
     pomodorotimer.cpp \
     timer.cpp \
     pomodorotimer.h
 
 HEADERS += \
     mainwindow.h \
+    pomodorocontroller.h \
+    pomodorosession.h \
     pomodorotimer.h \
     timer.h \
     pomodorotimer.h

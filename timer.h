@@ -9,12 +9,10 @@ class Timer : public QObject
 {
     Q_OBJECT
 public:
-    Timer(QObject *parent = nullptr);
+    Timer(QObject *parent = nullptr, const QTime time = QTime(0,0,0));
 
-    void start(const QTime &duration);
+    void start();
     void pause();
-    void resume();
-    void stop();
 
     QTime remainingTime() const;
     bool isTimerRunning() const;
@@ -29,9 +27,6 @@ private slots:
 private:
     QTimer *timer;
     QTime remaining;
-    bool isPaused;
-    bool isRunning;
-    bool reachedZeroOnce;
 };
 
 #endif // TIMER_H
