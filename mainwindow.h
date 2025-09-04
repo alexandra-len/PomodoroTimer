@@ -8,6 +8,7 @@
 #include <QTime>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QScreen>
 #include "timer.h"
 
 QT_BEGIN_NAMESPACE
@@ -40,6 +41,7 @@ private:
     QMediaPlayer *player;
     QAudioOutput *audioOutput;
     Ui::MainWindow *ui;
+    QScreen *screen;
     Qt::WindowFlags flags;
     void set_UI_time(QString timeToSet);
     void set_pauseBtn_text(QString);
