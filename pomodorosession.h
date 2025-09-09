@@ -2,6 +2,7 @@
 #define POMODOROSESSION_H
 
 #include "timer.h"
+
 class PomodoroSession : public QObject
 {
     Q_OBJECT
