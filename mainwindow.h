@@ -53,5 +53,6 @@ private:
     // void set_on_top(bool);
     bool isInputValid();
     void setWindowAlwaysOnTop();
+    void updateUi();
 };
 #endif // MAINWINDOW_H

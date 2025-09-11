@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "pomodorotimer.h"
+// #include "pomodorotimer.h"
 #include "pomodorocontroller.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     pomodoroController = new PomodoroController(this);
 
     connect(pomodoroController, &PomodoroController::tick, this, [this](QTime t) {ui->timerTxt->setText(t.toString("mm:ss"));});
-    connect(pomodoroController, &PomodoroController::sessionFinished, this, []() {});
+    connect(pomodoroController, &PomodoroController::sessionFinished, this, [this]() {updateUi();});
     connect(pomodoroController, &PomodoroController::allSessionsFinished, this, []() {});
 
     // pomodoroController = new PomodoroTimer(this);
@@ -50,19 +50,23 @@ void MainWindow::on_startBtn_clicked() {
 }
 
 void MainWindow::on_stopBtn_clicked() {
+    pomodoroController -> stopAllSessions();
 
+    ui->stackedWidget->setCurrentWidget(0);
+    this->setWindowFlag(Qt::WindowStaysOnTopHint, false);
+    this->show();
 }
 
 void MainWindow::on_pauseBtn_clicked() {
-
+    pomodoroController -> pauseSession();
 }
 
 void MainWindow::on_skipBtn_clicked() {
-
+    pomodoroController -> nextSession();
 }
 
 void MainWindow::on_nextBtn_clicked() {
-
+    pomodoroController -> nextSession();
 }
 
 bool MainWindow::isInputValid() {
@@ -75,6 +79,9 @@ void MainWindow::setWindowAlwaysOnTop() {
 
     this->setWindowFlag(Qt::WindowStaysOnTopHint, ui->keepOnTopCheckBox->isChecked());
     this->show();
+}
+
+void MainWindow::updateUi() {
 
 }
 

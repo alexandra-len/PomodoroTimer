@@ -14,6 +14,7 @@ public:
     void pauseSession();
     void stopAllSessions();
     void nextSession();
+    int sessionsLeft();
 
 private:
     std::vector<PomodoroSession> sessions;
