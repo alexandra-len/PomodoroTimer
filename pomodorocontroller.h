@@ -10,10 +10,14 @@ class PomodoroController : public QObject
 public:
     PomodoroController(QObject *parent = nullptr);
 
-    void StartPomodoro(QTime, QTime, int);
+    void startPomodoro(QTime, QTime, int, bool);
+    void pauseSession();
+    void stopAllSessions();
+    void nextSession();
 
 private:
     std::vector<PomodoroSession> sessions;
+    bool continueAutomatically;
 
 signals:
     void tick(QTime);

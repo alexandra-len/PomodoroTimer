@@ -145,14 +145,14 @@
            </widget>
           </item>
           <item row="4" column="0">
-           <widget class="QPushButton" name="resetBtn">
+           <widget class="QPushButton" name="stopBtn">
             <property name="text">
              <string>Stop Timer</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QPushButton" name="continueBtn">
+           <widget class="QPushButton" name="nextBtn">
             <property name="text">
              <string>Next!</string>
             </property>
