@@ -11,13 +11,15 @@ public:
     PomodoroController(QObject *parent = nullptr);
 
     void startPomodoro(QTime, QTime, int, bool);
+    void startSession();
     void pauseSession();
     void stopAllSessions();
     void nextSession();
     int sessionsLeft();
 
 private:
-    std::vector<PomodoroSession> sessions;
+    QVector<PomodoroSession*> sessions;
+    PomodoroSession* currentSession;
     bool continueAutomatically;
 
 signals:
