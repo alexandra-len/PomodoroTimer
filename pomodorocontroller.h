@@ -13,8 +13,10 @@ public:
     void startPomodoro(QTime, QTime, int, bool);
     void startSession();
     void pauseSession();
+    void resumeSession();
     void stopAllSessions();
     void nextSession();
+    void onSessionEnd();
     int sessionsLeft();
 
 private:

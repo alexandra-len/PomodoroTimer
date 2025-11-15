@@ -32,6 +32,7 @@ private slots:
     void on_pauseBtn_clicked();
     void on_skipBtn_clicked();
     void on_nextBtn_clicked();
+    void on_resumeBtn_clicked();
 
 private:
     Timer *timerController;
@@ -54,5 +55,6 @@ private:
     bool isInputValid();
     void setWindowAlwaysOnTop();
     void updateUi();
+    void switchToTimerScreen();
 };
 #endif // MAINWINDOW_H

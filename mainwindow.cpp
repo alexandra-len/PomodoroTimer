@@ -42,11 +42,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_startBtn_clicked() {
     if (isInputValid()) {
-        ui->stackedWidget->setCurrentIndex(1);
-        setWindowAlwaysOnTop();
+        switchToTimerScreen();
 
         pomodoroController -> startPomodoro(ui->setWork->time(), ui->setBreak->time(), ui->pomodoroNr->value(), ui->continueCheckBox->isChecked());
     }
+}
+
+void MainWindow::switchToTimerScreen() {
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->resumeBtn->hide();
+    ui->nextBtn->hide();
+
+    setWindowAlwaysOnTop();
 }
 
 void MainWindow::on_stopBtn_clicked() {
@@ -59,13 +66,23 @@ void MainWindow::on_stopBtn_clicked() {
 
 void MainWindow::on_pauseBtn_clicked() {
     pomodoroController -> pauseSession();
+    ui->pauseBtn->hide();
+    ui->resumeBtn->show();
+}
+
+void MainWindow::on_resumeBtn_clicked() {
+    pomodoroController -> resumeSession();
+    ui->pauseBtn->show();
+    ui->resumeBtn->hide();
 }
 
 void MainWindow::on_skipBtn_clicked() {
-    pomodoroController -> nextSession();
+    pomodoroController -> onSessionEnd();
 }
 
 void MainWindow::on_nextBtn_clicked() {
+    ui->nextBtn->hide();
+    ui->pauseBtn->show();
     pomodoroController -> nextSession();
 }
 
@@ -82,7 +99,13 @@ void MainWindow::setWindowAlwaysOnTop() {
 }
 
 void MainWindow::updateUi() {
+    QString pomodoroText = QString("%1/%2 pomodoros completed.").arg(pomodoroController->sessionsLeft(), ui->pomodoroNr->value());
+    ui->pomodorosLeft->setText(pomodoroText);
 
+    if (!ui->continueCheckBox->isChecked()) {
+        ui->pauseBtn->hide();
+        ui->nextBtn->show();
+    }
 }
 
 // void MainWindow::on_startBtn_clicked()

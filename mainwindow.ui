@@ -21,7 +21,7 @@
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_5">
@@ -122,12 +122,22 @@
       </widget>
       <widget class="QWidget" name="page_2">
        <layout class="QGridLayout" name="gridLayout_6">
+        <item row="1" column="0">
+         <widget class="QLabel" name="pomodorosLeft">
+          <property name="text">
+           <string>Pomodoros left:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout">
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QPushButton" name="skipBtn">
             <property name="text">
-             <string>Skip Timer</string>
+             <string>Skip</string>
             </property>
            </widget>
           </item>
@@ -144,38 +154,35 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QPushButton" name="stopBtn">
             <property name="text">
-             <string>Stop Timer</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="nextBtn">
-            <property name="text">
-             <string>Next!</string>
+             <string>Stop</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="pauseBtn">
             <property name="text">
-             <string>Start Timer</string>
+             <string>Pause</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="nextBtn">
+            <property name="text">
+             <string>Next!</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="resumeBtn">
+            <property name="text">
+             <string>Resume</string>
             </property>
            </widget>
           </item>
          </layout>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="pomodorosLeft">
-          <property name="text">
-           <string>Pomodoros left:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignmentFlag::AlignCenter</set>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>
