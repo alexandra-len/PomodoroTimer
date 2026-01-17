@@ -9,30 +9,13 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->stackedWidget->setCurrentIndex(0);
 
-    player = new QMediaPlayer(this);
-    audioOutput = new QAudioOutput(this);
-
-    player->setAudioOutput(audioOutput);
-    player->setSource(QUrl::fromLocalFile("C:\\Users\\aaa\\Documents\\GitHub\\MatchaRun\\Assets\\Art\\SFX\\Bunny\\bunny_jump.wav"));
-    audioOutput->setVolume(1);
+    setStartPage();
+    setAudio();
 
     pomodoroController = new PomodoroController(this);
 
-    connect(pomodoroController, &PomodoroController::tick, this, [this](QTime t) {ui->timerTxt->setText(t.toString("mm:ss"));});
-    connect(pomodoroController, &PomodoroController::sessionFinished, this, [this]() {updateUi();});
-    connect(pomodoroController, &PomodoroController::allSessionsFinished, this, []() {});
-
-    // pomodoroController = new PomodoroTimer(this);
-
-    // remainingTime = ui->setWork->time();
-
-    // connect(pomodoroController, &PomodoroTimer::pomodoroTick, this, [this](QTime t) {ui->timerTxt->setText(t.toString("mm:ss"));});
-    // connect(pomodoroController, &PomodoroTimer::pomodorosFinished, this, [this]() {on_timer_stop(); player->play();});
-    // connect(pomodoroController, &PomodoroTimer::pomodoroSingleFinished, this, [this](bool continueAutomatically, bool skipped) {on_timer_finish(continueAutomatically, skipped);});
-    // connect(pomodoroController, &PomodoroTimer::breakFinished, this, [this](bool continueAutomatically, bool skipped) {on_timer_finish(continueAutomatically, skipped);});
-    // connect(pomodoroController, &PomodoroTimer::timerStarted, this, [this](QTime t) { update_ui(t);});
+    connectPomodoro();
 }
 
 MainWindow::~MainWindow()
@@ -41,27 +24,12 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_startBtn_clicked() {
-    if (isInputValid()) {
-        switchToTimerScreen();
-
-        pomodoroController -> startPomodoro(ui->setWork->time(), ui->setBreak->time(), ui->pomodoroNr->value(), ui->continueCheckBox->isChecked());
-    }
-}
-
-void MainWindow::switchToTimerScreen() {
-    ui->stackedWidget->setCurrentIndex(1);
-    ui->resumeBtn->hide();
-    ui->nextBtn->hide();
-
-    setWindowAlwaysOnTop();
+    workTime = ui->workTimeInput->time();
+    pomodoroController -> startPomodoro(workTime, ui->breakTimeInput->time(), ui->pomodoroNr->value(), ui->continueCheckBox->isChecked());
 }
 
 void MainWindow::on_stopBtn_clicked() {
     pomodoroController -> stopAllSessions();
-
-    ui->stackedWidget->setCurrentWidget(0);
-    this->setWindowFlag(Qt::WindowStaysOnTopHint, false);
-    this->show();
 }
 
 void MainWindow::on_pauseBtn_clicked() {
@@ -83,11 +51,73 @@ void MainWindow::on_skipBtn_clicked() {
 void MainWindow::on_nextBtn_clicked() {
     ui->nextBtn->hide();
     ui->pauseBtn->show();
-    pomodoroController -> nextSession();
+    pomodoroController -> startSession();
+    ui->timerTxt->setText(pomodoroController->totalSessionTime().toString("mm:ss"));
 }
 
-bool MainWindow::isInputValid() {
-    return (ui->setWork->time() > QTime(0,0,0) && ui->setBreak->time() > QTime(0,0,0) && ui->pomodoroNr->value() > 0);
+void MainWindow::on_doneBtn_clicked() {
+    setStartPage();
+}
+
+void MainWindow::onSessionsFinished() {
+    ui->nextBtn->hide();
+    ui->pauseBtn->hide();
+    ui->stopBtn->hide();
+    ui->skipBtn->hide();
+    ui->resumeBtn->hide();
+
+    ui->doneBtn->show();
+    player->setSource(QUrl("qrc:/assets/3_notes.wav"));
+    player->play();
+}
+
+void MainWindow::setStartPage() {
+    ui->stackedWidget->setCurrentIndex(0);
+    this->setWindowFlag(Qt::WindowStaysOnTopHint, false);
+    this->show();
+}
+
+void MainWindow::setTimerPage() {
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->resumeBtn->hide();
+    ui->nextBtn->hide();
+    ui->doneBtn->hide();
+
+    ui->pauseBtn->show();
+    ui->stopBtn->show();
+    ui->skipBtn->show();
+
+    ui->timerTxt->setText(workTime.toString("mm:ss"));
+    QString pomodoroText = QString("%1/%2 pomodoros completed.").arg(pomodoroController->sessionsCompleted()).arg(ui->pomodoroNr->value());
+    ui->pomodorosLeft->setText(pomodoroText);
+
+    setWindowAlwaysOnTop();
+}
+
+void MainWindow::setAudio() {
+    player = new QMediaPlayer(this);
+    audioOutput = new QAudioOutput(this);
+
+    player->setAudioOutput(audioOutput);
+    player->setSource(QUrl("qrc:/assets/1_note.wav"));
+    audioOutput->setVolume(1);
+}
+
+void MainWindow::connectPomodoro() {
+    connect(pomodoroController, &PomodoroController::pomodoroStarted, this, [this]() {setTimerPage();});
+    connect(pomodoroController, &PomodoroController::tick, this, [this](QTime t) {ui->timerTxt->setText(t.toString("mm:ss"));});
+    connect(pomodoroController, &PomodoroController::sessionFinished, this, [this]() {updateUi(); player->play();});
+    connect(pomodoroController, &PomodoroController::allSessionsFinished, this, [this]() {onSessionsFinished();});
+}
+
+void MainWindow::updateUi() {
+    QString pomodoroText = QString("%1/%2 pomodoros completed.").arg(pomodoroController->sessionsCompleted()).arg(ui->pomodoroNr->value());
+    ui->pomodorosLeft->setText(pomodoroText);
+
+    if (!pomodoroController->continuesAutomatically()) {
+        ui->pauseBtn->hide();
+        ui->nextBtn->show();
+    }
 }
 
 void MainWindow::setWindowAlwaysOnTop() {
@@ -97,114 +127,3 @@ void MainWindow::setWindowAlwaysOnTop() {
     this->setWindowFlag(Qt::WindowStaysOnTopHint, ui->keepOnTopCheckBox->isChecked());
     this->show();
 }
-
-void MainWindow::updateUi() {
-    QString pomodoroText = QString("%1/%2 pomodoros completed.").arg(pomodoroController->sessionsLeft(), ui->pomodoroNr->value());
-    ui->pomodorosLeft->setText(pomodoroText);
-
-    if (!ui->continueCheckBox->isChecked()) {
-        ui->pauseBtn->hide();
-        ui->nextBtn->show();
-    }
-}
-
-// void MainWindow::on_startBtn_clicked()
-// {
-//     if (ui->setWork->time() > QTime(0,0,0,0) && ui->setBreak->time() > QTime(0,0,0,0)) {
-//         ui->stackedWidget->setCurrentIndex(1);
-//         set_on_top(true);
-//         ui->continueBtn->hide();
-
-//         pomodoroController->setBreakTime(ui->setBreak->time());
-//         pomodoroController->setWorkTime(ui->setWork->time());
-//         pomodoroController->setPomodoroCount(ui->pomodoroNr->value());
-//         pomodoroController->setContinueAutomatically(ui->continueCheckBox->isChecked());
-//         pomodoroController->start();
-
-//         update_ui(ui->setWork->time());
-//         set_pauseBtn_text("Pause Timer");
-//     }
-//     else {
-//         ui->warningTxt->setText("WARNING: Input time must be more than 0.");
-//     }
-// }
-// void MainWindow::on_resetBtn_clicked() {
-//     pomodoroController->stop();
-//     on_timer_stop();
-// }
-
-// void MainWindow::on_pauseBtn_clicked() {
-//     pomodoroController->pause();
-//     if (pomodoroController->isRunning()) {
-//         set_pauseBtn_text("Pause Timer");
-//     }
-//     else {
-//         set_pauseBtn_text("Resume Timer");
-//     }
-
-// }
-
-// void MainWindow::on_skipBtn_clicked() {
-//     pomodoroController->skip();
-// }
-
-// void MainWindow::on_continueBtn_clicked() {
-//     pomodoroController->continueTimer();
-//     ui->continueBtn->hide();
-//     ui->pauseBtn->show();
-// }
-
-// void MainWindow::set_UI_time(QString timeToSet) {
-//     ui->timerTxt->setText(timeToSet);
-// }
-// void MainWindow::set_pauseBtn_text(QString text) {
-//     ui->pauseBtn->setText(text);
-// }
-
-// void MainWindow::update_ui(const QTime &t) {
-//     QString pomodoroText = "Pomodoros left: ";
-//     pomodoroText.append(QVariant(pomodoroController->getPomodorosLeft()).toString());
-//     ui->pomodorosLeft->setText(pomodoroText);
-//     ui->timerTxt->setText(t.toString("mm:ss"));
-// }
-
-// void MainWindow::on_timer_stop() {
-//     pomodoroController->stop();
-//     ui->pauseBtn->setText("Start Timer");
-//     set_UI_time(remainingTime.toString("mm:ss"));
-//     ui->pauseBtn->show();
-//     set_on_top(false);
-//     ui->stackedWidget->setCurrentIndex(0);
-// }
-
-// void MainWindow::on_timer_finish(bool continueAutomatically, bool skipped) {
-//     player->play();
-//     if (!skipped) {
-//         if (!continueAutomatically) {
-//             ui->pauseBtn->hide();
-//             ui->continueBtn->show();
-//         }
-//     }
-// }
-
-// void MainWindow::set_on_top(bool keepOnTop) {
-//     Qt::WindowFlags flags = this->windowFlags();
-//     if (keepOnTop) {
-//         if (ui->keepOnTopCheckBox->isChecked()) {
-//             this->raise();
-//             this->activateWindow();
-
-//             this->setWindowFlags(flags | Qt::WindowStaysOnTopHint);
-//             this->show();
-//         }
-//         else {
-//             this->setWindowFlags(flags & ~Qt::WindowStaysOnTopHint);
-//             this->show();
-//         }
-//     }
-//     else {
-//         this->setWindowFlags(flags & ~Qt::WindowStaysOnTopHint);
-//         this->show();
-//     }
-// }
-

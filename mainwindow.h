@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "pomodorotimer.h"
 #include "qdatetime.h"
 #include <QMainWindow>
 #include <QTimer>
@@ -33,6 +32,7 @@ private slots:
     void on_skipBtn_clicked();
     void on_nextBtn_clicked();
     void on_resumeBtn_clicked();
+    void on_doneBtn_clicked();
 
 private:
     Timer *timerController;
@@ -46,15 +46,14 @@ private:
     Ui::MainWindow *ui;
     QScreen *screen;
     Qt::WindowFlags flags;
-    // void set_UI_time(QString timeToSet);
-    // void set_pauseBtn_text(QString);
-    // void on_timer_stop();
-    // void update_ui(const QTime &t);
-    // void on_timer_finish(bool, bool);
-    // void set_on_top(bool);
+    QTime workTime;
     bool isInputValid();
     void setWindowAlwaysOnTop();
     void updateUi();
-    void switchToTimerScreen();
+    void setTimerPage();
+    void connectPomodoro();
+    void setStartPage();
+    void setAudio();
+    void onSessionsFinished();
 };
 #endif // MAINWINDOW_H

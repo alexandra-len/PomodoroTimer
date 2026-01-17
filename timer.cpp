@@ -13,12 +13,15 @@ void Timer::start() {
 }
 
 void Timer::updateTime() {
-    if (remaining > QTime(0,0,0)) {
-        emit tick(remaining);
-        remaining = remaining.addSecs(-1);
-    }
-    else {
-        emit finished();
+    if (remaining >= QTime(0,0,0)) {
+        if (remaining == QTime(0,0,0)) {
+            emit tick(remaining);
+            emit finished();
+        }
+        else {
+            remaining = remaining.addSecs(-1);
+            emit tick(remaining);
+        }
     }
 }
 

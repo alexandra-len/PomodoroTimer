@@ -14,17 +14,13 @@ SOURCES += \
     mainwindow.cpp \
     pomodorocontroller.cpp \
     pomodorosession.cpp \
-    pomodorotimer.cpp \
-    timer.cpp \
-    pomodorotimer.h
+    timer.cpp
 
 HEADERS += \
     mainwindow.h \
     pomodorocontroller.h \
     pomodorosession.h \
-    pomodorotimer.h \
-    timer.h \
-    pomodorotimer.h
+    timer.h
 
 FORMS += \
     mainwindow.ui
@@ -33,3 +29,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resources.qrc

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix = "/">
+        <file>assets/1_note.wav</file>
+        <file>assets/2_notes.wav</file>
+        <file>assets/3_notes.wav</file>
+    </qresource>
+</RCC>

@@ -38,7 +38,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QTimeEdit" name="setBreak">
+           <widget class="QTimeEdit" name="breakTimeInput">
             <property name="currentSection">
              <enum>QDateTimeEdit::Section::MinuteSection</enum>
             </property>
@@ -59,7 +59,7 @@
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="2" column="0">
-           <widget class="QTimeEdit" name="setWork">
+           <widget class="QTimeEdit" name="workTimeInput">
             <property name="currentSection">
              <enum>QDateTimeEdit::Section::MinuteSection</enum>
             </property>
@@ -134,10 +134,38 @@
         </item>
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout">
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QPushButton" name="skipBtn">
             <property name="text">
              <string>Skip</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="nextBtn">
+            <property name="text">
+             <string>Next!</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="pauseBtn">
+            <property name="text">
+             <string>Pause</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QPushButton" name="stopBtn">
+            <property name="text">
+             <string>Stop</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="resumeBtn">
+            <property name="text">
+             <string>Resume</string>
             </property>
            </widget>
           </item>
@@ -154,31 +182,10 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QPushButton" name="stopBtn">
+          <item row="4" column="0">
+           <widget class="QPushButton" name="doneBtn">
             <property name="text">
-             <string>Stop</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="pauseBtn">
-            <property name="text">
-             <string>Pause</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QPushButton" name="nextBtn">
-            <property name="text">
-             <string>Next!</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="resumeBtn">
-            <property name="text">
-             <string>Resume</string>
+             <string>Done!</string>
             </property>
            </widget>
           </item>
